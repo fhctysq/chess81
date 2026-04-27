@@ -23,23 +23,43 @@ graph TD
     ScreenFactory -.-> FactoryNote["Визначає режим гри<br/>через параметри<br/>навігації та вмикає<br/>відповідну модель"]
     class FactoryNote note;
     
+    %% Моделі вигляду
     subgraph "Моделі вигляду (Режими)"
-        ScreenFactory --> VM_Standard["ViewModel:<br/>Стандарт"]
-        ScreenFactory --> VM_Symmetric["ViewModel:<br/>Симетричний<br/>(2 гравці)"]
-        ScreenFactory --> VM_Puzzle["ViewModel:<br/>Пазли /<br/>Мініігри"]
+        VM_Standard["ViewModel:<br/>Стандарт / Бот"]
+        VM_Online["ViewModel:<br/>Онлайн (Firebase)"]
+        VM_Symmetric["ViewModel:<br/>Симетричний<br/>(2 гравці)"]
+        VM_Puzzle["ViewModel:<br/>Пазли /<br/>Мініігри"]
+        
+        %% Хак: невидимі ребра для вертикального вирівнювання блоку
+        VM_Standard ~~~ VM_Online
+        VM_Online ~~~ VM_Symmetric
+        VM_Symmetric ~~~ VM_Puzzle
     end
     
-    VM_Standard --> UniversalBoardUI["Універсальний<br/>UI Дошки"]
-    VM_Symmetric --> UniversalBoardUI
-    VM_Puzzle --> UniversalBoardUI
+    ScreenFactory --> VM_Standard
+    ScreenFactory --> VM_Online
+    ScreenFactory --> VM_Symmetric
+    ScreenFactory --> VM_Puzzle
     
-    GlobalState -.-> UniversalBoardUI
+    %% Ієрархія UI
+    subgraph "Композиція UI дошки"
+        BoardLayout["BoardElementsLayout<br/>(або DualGameScreen)"] --> Wrapper["ChessBoardWrapper<br/>(Масштаб/Осі)"]
+        Wrapper --> Board["ChessBoard<br/>(Сітка)"]
+        Board --> Square["ChessSquare<br/>(Клітинка)"]
+    end
+    
+    VM_Standard --> BoardLayout
+    VM_Online --> BoardLayout
+    VM_Symmetric --> BoardLayout
+    VM_Puzzle --> BoardLayout
+    
+    GlobalState -.-> BoardLayout
     
     %% Концепт: Логіка гри
-    UniversalBoardUI --> GameState["Стан Партії /<br/>Моделі"]
+    Square --> GameState["Стан Партії /<br/>Моделі"]
     
     %% Концепт: Взаємодія та Хід
-    UniversalBoardUI --> UserInput["Ввід:<br/>Клік / Свайп"]
+    Square --> UserInput["Ввід:<br/>Клік / Свайп"]
     UserInput --> MoveValidation["Валідатор<br/>Ходів"]
     MoveValidation --> GameState
     
@@ -51,7 +71,7 @@ graph TD
     
     %% Концепт: Анімація
     GameState --> AnimState["Компоненти Анімації:<br/>Offset / Coroutines"]
-    AnimState --> UniversalBoardUI
+    AnimState --> Square
     
     %% Концепт: Фідбек
     GameState --> Feedback["Виклик звуку<br/>чи вібрації"]
