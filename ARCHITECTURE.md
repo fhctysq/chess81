@@ -3,13 +3,13 @@
 ```mermaid
 graph TD
     %% Глобальні стилі для вузлів: більший шрифт, заокруглення
-    classDef default font-size:15px, rx:8px, ry:8px;
-    classDef note fill:#fff5ad,stroke:#d6b656,color:#333,font-size:14px;
+    classDef default font-size:16px, rx:8px, ry:8px;
+    classDef note fill:#fff5ad,stroke:#d6b656,color:#333,font-size:16px;
 
-    %% Основні точки входу та ініціалізації
+    %% Основні входи та ініціалізації
     Main["MainActivity<br/>Lifecycle"] --> Bridge["C++ Рушій:<br/>Engine81Bridge"]
     Main --> Settings["Налаштування:<br/>SettingsManager"]
-    Main --> Media["Медіа:<br/>SoundPool / Vibrator"]
+    Main --> Media["Медіа:<br/>SoundPool / Vibration"]
     
     %% Глобальний стан
     Settings --> GlobalState["Глобальний UI Стан:<br/>CompositionLocal"]
@@ -20,7 +20,7 @@ graph TD
     Nav --> ScreenFactory["Універсальна<br/>Фабрика Екранів"]
     
     %% Компактна нотатка з ручним розривом
-    ScreenFactory -.-> FactoryNote["Нотатка:<br/>Визначає режим гри<br/>через параметри навігації<br/>та підключає відповідну модель"]
+    ScreenFactory -.-> FactoryNote["Визначає режим гри<br/>через параметри<br/>навігації та вмикає<br/>відповідну модель"]
     class FactoryNote note;
     
     subgraph "Моделі вигляду (Режими)"
@@ -51,8 +51,7 @@ graph TD
     
     %% Концепт: Анімація
     GameState --> AnimState["Компоненти Анімації:<br/>Offset / Coroutines"]
-    AnimState --> AnimAction["Анімація працює:<br/>Переміщення"]
-    AnimAction --> UniversalBoardUI
+    AnimState --> UniversalBoardUI
     
     %% Концепт: Фідбек
     GameState --> Feedback["Виклик звуку<br/>чи вібрації"]
