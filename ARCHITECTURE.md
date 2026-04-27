@@ -15,11 +15,14 @@ graph TD
     Nav --> ScreenHome[Головне меню]
     
     Nav --> ScreenFactory[Універсальна Фабрика Екранів]
-    note right of ScreenFactory: Визначає режим гри\n(через параметри навігації)\nта підключає потрібну модель
+    
+    %% Заміна "note right of" на крос-платформовий варіант
+    ScreenFactory -.-> FactoryNote[Нотатка: Визначає режим гри через\nпараметри навігації та підключає\nвідповідну модель]
+    style FactoryNote fill:#fff5ad,stroke:#d6b656,color:#333
     
     subgraph "Моделі вигляду (Режими)"
         ScreenFactory --> VM_Standard[ViewModel: Стандарт]
-        ScreenFactory --> VM_Symmetric[ViewModel: Симетричний\n(для 2 гравців)]
+        ScreenFactory --> VM_Symmetric[ViewModel: Симетричний\nдля 2 гравців]
         ScreenFactory --> VM_Puzzle[ViewModel: Пазли / Мініігри]
     end
     
