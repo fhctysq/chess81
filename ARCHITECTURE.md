@@ -2,55 +2,58 @@
 
 ```mermaid
 graph TD
+    %% Глобальні стилі для вузлів: більший шрифт, заокруглення
+    classDef default font-size:15px, rx:8px, ry:8px;
+    classDef note fill:#fff5ad,stroke:#d6b656,color:#333,font-size:14px;
+
     %% Основні точки входу та ініціалізації
-    Main[MainActivity Lifecycle] --> Bridge[C++ Рушій: Engine81Bridge]
-    Main --> Settings[Налаштування: SettingsManager]
-    Main --> Media[Медіа: SoundPool / Vibrator]
+    Main["MainActivity<br/>Lifecycle"] --> Bridge["C++ Рушій:<br/>Engine81Bridge"]
+    Main --> Settings["Налаштування:<br/>SettingsManager"]
+    Main --> Media["Медіа:<br/>SoundPool / Vibrator"]
     
     %% Глобальний стан
-    Settings --> GlobalState[Глобальний UI Стан: CompositionLocal]
+    Settings --> GlobalState["Глобальний UI Стан:<br/>CompositionLocal"]
     
-    %% Навігація та Екрани (ОНОВЛЕНИЙ КОНЦЕПТ ФАБРИКИ)
-    Main --> Nav[Навігатор: Compose NavHost]
-    Nav --> ScreenHome[Головне меню]
+    %% Навігація та Екрани
+    Main --> Nav["Навігатор:<br/>Compose NavHost"]
+    Nav --> ScreenHome["Головне<br/>меню"]
+    Nav --> ScreenFactory["Універсальна<br/>Фабрика Екранів"]
     
-    Nav --> ScreenFactory[Універсальна Фабрика Екранів]
-    
-    %% Заміна "note right of" на крос-платформовий варіант
-    ScreenFactory -.-> FactoryNote[Нотатка: Визначає режим гри через\nпараметри навігації та підключає\nвідповідну модель]
-    style FactoryNote fill:#fff5ad,stroke:#d6b656,color:#333
+    %% Компактна нотатка з ручним розривом
+    ScreenFactory -.-> FactoryNote["Нотатка:<br/>Визначає режим гри<br/>через параметри навігації<br/>та підключає відповідну модель"]
+    class FactoryNote note;
     
     subgraph "Моделі вигляду (Режими)"
-        ScreenFactory --> VM_Standard[ViewModel: Стандарт]
-        ScreenFactory --> VM_Symmetric[ViewModel: Симетричний\nдля 2 гравців]
-        ScreenFactory --> VM_Puzzle[ViewModel: Пазли / Мініігри]
+        ScreenFactory --> VM_Standard["ViewModel:<br/>Стандарт"]
+        ScreenFactory --> VM_Symmetric["ViewModel:<br/>Симетричний<br/>(2 гравці)"]
+        ScreenFactory --> VM_Puzzle["ViewModel:<br/>Пазли /<br/>Мініігри"]
     end
     
-    VM_Standard --> UniversalBoardUI[Універсальний UI Дошки]
+    VM_Standard --> UniversalBoardUI["Універсальний<br/>UI Дошки"]
     VM_Symmetric --> UniversalBoardUI
     VM_Puzzle --> UniversalBoardUI
     
     GlobalState -.-> UniversalBoardUI
     
     %% Концепт: Логіка гри
-    UniversalBoardUI --> GameState[Стан Партії / Моделі]
+    UniversalBoardUI --> GameState["Стан Партії /<br/>Моделі"]
     
     %% Концепт: Взаємодія та Хід
-    UniversalBoardUI --> UserInput[Клік по клітинці / Свайп]
-    UserInput --> MoveValidation[Валідатор Ходів]
+    UniversalBoardUI --> UserInput["Ввід:<br/>Клік / Свайп"]
+    UserInput --> MoveValidation["Валідатор<br/>Ходів"]
     MoveValidation --> GameState
     
-    %% Концепт: Робота рушія (Бота / Підказок)
-    GameState --> EngineReq[Запит до JNI]
+    %% Концепт: Робота рушія
+    GameState --> EngineReq["Запит<br/>до JNI"]
     Bridge --> EngineReq
-    EngineReq --> EngineRes[Відповідь: Хід / Оцінка]
+    EngineReq --> EngineRes["Відповідь:<br/>Хід / Оцінка"]
     EngineRes --> GameState
     
     %% Концепт: Анімація
-    GameState --> AnimState[Компоненти Анімації: Offset / Coroutines]
-    AnimState --> AnimAction[Анімація працює: Переміщення]
+    GameState --> AnimState["Компоненти Анімації:<br/>Offset / Coroutines"]
+    AnimState --> AnimAction["Анімація працює:<br/>Переміщення"]
     AnimAction --> UniversalBoardUI
     
     %% Концепт: Фідбек
-    GameState --> Feedback[Виклик звуку / вібрації]
+    GameState --> Feedback["Виклик звуку<br/>чи вібрації"]
     Media --> Feedback
