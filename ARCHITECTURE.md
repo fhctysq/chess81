@@ -3,8 +3,8 @@
 ```mermaid
 graph TD
     %% Глобальні стилі для вузлів: більший шрифт, заокруглення
-    classDef default font-size:18px, rx:8px, ry:8px;
-    classDef note fill:#fff5ad,stroke:#d6b656,color:#333,font-size:16px;
+    classDef default font-size:20px, rx:8px, ry:8px;
+    classDef note fill:#fff5ad,stroke:#d6b656,color:#333,font-size:18px;
 
     %% Основні входи та ініціалізації
     Main["MainActivity<br/>Lifecycle"] --> Bridge["C++ Рушій:<br/>Engine81Bridge"]
